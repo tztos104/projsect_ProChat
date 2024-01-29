@@ -21,7 +21,7 @@ import java.time.Instant;
 public class CommentEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id = null;
+    private Long id;
 
     @Column(name = "comment")
     private String comment;

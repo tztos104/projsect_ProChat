@@ -21,6 +21,7 @@ public enum ErrorCode {
     INVALID_FOLLOW(HttpStatus.UNAUTHORIZED, "자신을 팔로우 할 수 없습니다."),
     INVALID_EMAIL_OR_CERTIFICATION_NUMBER(HttpStatus.UNAUTHORIZED, "잘못된 이메일 또는 인증번호입니다."),
     EMAIL_NOT_FOUND(HttpStatus.NOT_FOUND, "Email not found"),
+    COMMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "Comment not found"),
     ;
 
     private final HttpStatus status;

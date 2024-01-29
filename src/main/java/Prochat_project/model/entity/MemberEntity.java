@@ -15,7 +15,7 @@ import java.util.Objects;
 @Getter
 @Setter
 @Table(name = "\"members\"")
-@SQLDelete(sql = "UPDATE \"members\" SET remove_date = NOW() WHERE id=?")
+@SQLDelete(sql = "UPDATE members SET remove_date = NOW() WHERE id=?")
 @Where(clause = "remove_date is NULL")
 @NoArgsConstructor
 @Entity
@@ -26,12 +26,12 @@ public class MemberEntity {
     private Long id;
     private String memberId;
     private String memberPw;
-    private String memberName;
     private String memberEmail;
+
+    private String memberName;
     private String memberPhone;
     private String memberAddress;
     private String memberAddressDetail;
-    private int memberZipcode;
     private String memberProfile;
     private String memberImage;
 
@@ -60,6 +60,16 @@ public class MemberEntity {
         entity.setMemberId(memberId);
         entity.setMemberPw(memberPw);
         entity.setMemberEmail(memberEmail);
+        return entity;
+    }
+
+    public static MemberEntity profileof(String memberName, String memberPhone, String memberAddress, String memberProfile, String memberImage) {
+        MemberEntity entity = new MemberEntity();
+        entity.setMemberName(memberName);
+        entity.setMemberPhone(memberPhone);
+        entity.setMemberAddress(memberAddress);
+        entity.setMemberProfile(memberProfile);
+        entity.setMemberImage(memberImage);
         return entity;
     }
 

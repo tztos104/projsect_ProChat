@@ -14,6 +14,7 @@ public class Like {
     private Long memberId;
     private String memberName;
     private Long postId;
+    private Long commentId;
     private Timestamp registeredAt;
     private Timestamp updatedAt;
     private Timestamp removedAt;
@@ -25,6 +26,7 @@ public class Like {
                 entity.getMember().getId(),
                 entity.getMember().getMemberId(),
                 entity.getPost().getId(),
+                entity.getComment().getId(),
                 entity.getRegDate(),
                 entity.getUpdateDate(),
                 entity.getRemoveDate()

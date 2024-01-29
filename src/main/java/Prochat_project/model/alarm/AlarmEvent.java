@@ -10,5 +10,5 @@ import lombok.NoArgsConstructor;
 public class AlarmEvent {
     private AlarmType type;
     private AlarmArgs args;
-    private Integer receiverUserId = 1;
+    private Long receiverUserId = 1L;
 }

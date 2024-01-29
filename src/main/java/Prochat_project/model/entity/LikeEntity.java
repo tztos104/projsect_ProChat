@@ -14,7 +14,7 @@ import java.time.Instant;
 @Getter
 @Entity
 @Table(name = "\"like\"")
-@SQLDelete(sql = "UPDATE \"like\" SET remove_date = NOW() WHERE id=?")
+@SQLDelete(sql = "UPDATE like SET remove_date = NOW() WHERE id=?")
 @Where(clause = "remove_date is NULL")
 @NoArgsConstructor
 public class LikeEntity {
@@ -29,6 +29,10 @@ public class LikeEntity {
     @ManyToOne
     @JoinColumn(name = "post_id")
     private PostEntity post;
+
+    @ManyToOne
+    @JoinColumn(name = "comment_id")
+    private CommentEntity comment;
 
     @Column(name = "reg_date")
     private Timestamp regDate;

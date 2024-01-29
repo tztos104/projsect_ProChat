@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AlarmArgs {
     // user who occur alarm
-    private Integer fromUserId;
-    private Integer targetId;
+    private Long fromUserId;
+    private Long targetId;
 }

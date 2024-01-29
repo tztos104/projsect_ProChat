@@ -22,6 +22,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
+
 @Service
 @RequiredArgsConstructor
 public class MemberService {
@@ -31,6 +33,7 @@ public class MemberService {
     private final BCryptPasswordEncoder encoder;
     private final AlarmRepository alarmRepository;
     private final CacheRepository redisRepository;
+    private final RedisTemplate<String, String> redisTemplate;
 
     @Value("${jwt.secret-key}")
     private String secretKey;
@@ -56,7 +59,9 @@ public class MemberService {
         if (!encoder.matches(memberPw, savedUser.getPassword())) {
             throw new ProchatException(ErrorCode.INVALID_PASSWORD);
         }
-        return JwtTokenUtils.generateAccessToken(memberId, secretKey, expiredTimeMs);
+
+
+        return  JwtTokenUtils.generateAccessToken(memberId, secretKey, expiredTimeMs);
     }
 
 
@@ -73,26 +78,50 @@ public class MemberService {
     }
 
 
-
-  /*  //로그인
-    public String login(String memberId, String memberPw ){
-        //회원가입 여부체크
-        MemberEntity memberEntity = memberRepository.findByMemberId(memberId).orElseThrow(() ->
-                new ProchatException(ErrorCode.USER_NOT_FOUND,String.format("%s 는 없는 아이디 입니다.",memberId)));
-
-        //비밀번호 체크
-        if(!encoder.matches(memberPw, memberEntity.getMemberPw())){
-            throw new ProchatException(ErrorCode.INVALID_PASSWORD, "비밀번호가 틀렸습니다.");
-
+    public void logout() {
+        Members member = (Members) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (redisTemplate.opsForValue().get("JWT_TOKEN:" + member.getMemberId()) != null) {
+            redisTemplate.delete("JWT_TOKEN:" + member.getMemberId()); //Token 삭제
         }
-        //토큰생성
-        String token = JwtTokenUtils.generateToken(memberId, secretKey, expiredTimeMs);
-        String key = BLACKLIST_KEY_PREFIX + token;
-        redisTemplate.opsForValue().set("JWT_TOKEN:" + memberId, token);
+    }
 
-        return token;
+    //프로필 업데이트
+    @Transactional
+    public Members updateProfile(String memberId, String memberName, String memberPhone, String memberAddress,
+                                 String memberProfile, String memberImage) {
+        MemberEntity entity = memberRepository.findByMemberId(memberId)
+                .orElseThrow(() -> new ProchatException(ErrorCode.USER_NOT_FOUND, "멤버를 찾을 수 없습니다"));
 
-    }*/
+
+        entity.setMemberName(memberName);
+        entity.setMemberPhone(memberPhone);
+        entity.setMemberAddress(memberAddress);
+        entity.setMemberProfile(memberProfile);
+        entity.setMemberImage(memberImage);
+
+          // 업데이트된 멤버 정보로 변환하여 반환
+        return Members.fromEntity(memberRepository.saveAndFlush(entity));
+    }
+
+    //비밀번호 업데이트
+
+    @Transactional
+    public Members updatePassword(String memberId, String memberPw, String newPassword) {
+        MemberEntity member = memberRepository.findByMemberId(memberId)
+                .orElseThrow(() -> new ProchatException(ErrorCode.USER_NOT_FOUND, "멤버를 찾을 수 없습니다"));
+
+        // 현재 비밀번호 확인
+        if (!encoder.matches(memberPw, member.getMemberPw())) {
+            throw new ProchatException(ErrorCode.INVALID_PASSWORD, "현재 비밀번호가 일치하지 않습니다");
+        }
+        // 새로운 비밀번호로 업데이트
+        member.setMemberPw(encoder.encode(newPassword));
+        // 업데이트된 멤버 정보로 변환하여 반환
+        return Members.fromEntity(memberRepository.save(member));
+    }
+
+
+
 
 
 

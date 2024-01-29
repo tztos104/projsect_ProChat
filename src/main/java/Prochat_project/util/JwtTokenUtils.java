@@ -1,20 +1,27 @@
 package Prochat_project.util;
 
 
+import Prochat_project.service.MemberService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
-import org.springframework.data.redis.core.RedisTemplate;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
-
+@RequiredArgsConstructor
+@EnableWebSecurity
 @AllArgsConstructor
 public class JwtTokenUtils  {
+
+
+    @Value("${jwt.secret-key}")
+    private  String key;
 
     public static Boolean validate(String token, String memberId, String key) {
         String memberIdByToken = getMemberId(token, key);
@@ -58,6 +65,8 @@ public class JwtTokenUtils  {
                 .signWith(getSigningKey(key), SignatureAlgorithm.HS256)
                 .compact();
     }
+
+
 
 
 }

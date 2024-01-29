@@ -24,14 +24,30 @@ public class CacheRepository {
         RedisTemplate.opsForValue().set(key, member, USER_CACHE_TTL);
     }
 
+
+
     public Optional<Members> getUser(String userName) {
         Members data = RedisTemplate.opsForValue().get(getKey(userName));
         log.info("Get User from Redis {}", data);
         return Optional.ofNullable(data);
     }
 
-
-    private String getKey(String userName) {
+     private String getKey(String userName) {
         return "UID:" + userName;
     }
+
+
+
+    // 블랙리스트에 있는지 확인
+    public boolean isBlacklisted(String token) {
+        String key = getBlacklistKey(token);
+        return RedisTemplate.hasKey(key);
+    }
+
+    private String getBlacklistKey(String token) {
+        return "BLACKLIST:" + token;
+    }
+
+
+
 }

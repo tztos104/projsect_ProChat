@@ -21,7 +21,7 @@ import java.time.Instant;
 @Table(name = "\"alarm\"", indexes = {
         @Index(name = "members_id_idx", columnList = "members_id")
 })
-@SQLDelete(sql = "UPDATE \"alarm\" SET remove_date = NOW() WHERE id=?")
+@SQLDelete(sql = "UPDATE alarm SET remove_date = NOW() WHERE id=?")
 @Where(clause = "remove_date is NULL")
 @NoArgsConstructor
 public class AlarmEntity {

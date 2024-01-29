@@ -29,7 +29,7 @@ public class SecurityConfig {
     private final MemberService memberService;
     @Value("${jwt.secret-key}")
     private  String key;
-    private final RedisTemplate<String, String> redisTemplate;
+
 
 
 

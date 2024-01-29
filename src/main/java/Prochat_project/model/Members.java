@@ -25,6 +25,14 @@ public class Members implements UserDetails {
    private String memberPw;
    private String memberEmail;
    private MemberRole memberRole;
+
+   private String memberName;
+   private String memberPhone;
+   private String memberAddress;
+   private String memberAddressDetail;
+   private String memberProfile;
+   private String memberImage;
+
    private Timestamp regDate;
    private Timestamp updateDate;
    private Timestamp removeDate;
@@ -39,6 +47,12 @@ public class Members implements UserDetails {
               entity.getMemberPw(),
               entity.getMemberEmail(),
               entity.getRole(),
+              entity.getMemberName(),
+              entity.getMemberPhone(),
+              entity.getMemberAddress(),
+              entity.getMemberAddressDetail(),
+              entity.getMemberProfile(),
+              entity.getMemberImage(),
               entity.getRegDate(),
               entity.getUpdateDate(),
               entity.getRemoveDate()

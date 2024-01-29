@@ -3,6 +3,10 @@ package Prochat_project.service;
 import Prochat_project.exception.ErrorCode;
 import Prochat_project.exception.ProchatException;
 import Prochat_project.model.Follow;
+import Prochat_project.model.alarm.AlarmArgs;
+import Prochat_project.model.alarm.AlarmEvent;
+import Prochat_project.model.alarm.AlarmProducer;
+import Prochat_project.model.alarm.AlarmType;
 import Prochat_project.model.entity.FollowEntity;
 import Prochat_project.model.entity.MemberEntity;
 import Prochat_project.repository.FollowRepository;
@@ -22,6 +26,7 @@ public class FollowService {
 
     private final FollowRepository followRepository;
     private final MemberRepository memberRepository;
+    private final AlarmService alarmService;
 
     public List<FollowEntity> getFollowers(String memberId) {
         MemberEntity memberEntity = memberRepository.findByMemberId(memberId).orElseThrow(() ->
@@ -48,6 +53,7 @@ public class FollowService {
                     throw new ProchatException(ErrorCode.DUPLICATED_FOLLOW, String.format("%s 는 %s 를 이미 팔로우 하고 있습니다", follower, following));
                 });
         followRepository.save(FollowEntity.of(followerId, followingById));
+        alarmService.send(AlarmType.NEW_FOLLOW, new AlarmArgs(followerId.getId(), followingById.getId()), followingById.getId());
 
     }
 

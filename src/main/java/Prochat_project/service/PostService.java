@@ -4,6 +4,10 @@ import Prochat_project.exception.ErrorCode;
 import Prochat_project.exception.ProchatException;
 import Prochat_project.model.Comment;
 import Prochat_project.model.Post;
+import Prochat_project.model.alarm.AlarmArgs;
+import Prochat_project.model.alarm.AlarmEvent;
+import Prochat_project.model.alarm.AlarmProducer;
+import Prochat_project.model.alarm.AlarmType;
 import Prochat_project.model.entity.CommentEntity;
 import Prochat_project.model.entity.LikeEntity;
 import Prochat_project.model.entity.MemberEntity;
@@ -29,6 +33,8 @@ public class PostService {
     private final MemberRepository memberRepository;
     private final CommentRepository commentRepository;
     private final LikeRepository  likeRepository;
+    private final AlarmService  alarmService;
+
 
     @Transactional
     public void create(String title, String content, String memberId){
@@ -88,6 +94,7 @@ public class PostService {
                 .orElseThrow(() -> new ProchatException(ErrorCode.USER_NOT_FOUND, String.format("userName is %s", memberId)));
 
         commentRepository.save(CommentEntity.of(comment, postEntity, memberEntity));
+        alarmService.send(AlarmType.NEW_COMMENT_ON_POST, new AlarmArgs(memberEntity.getId(), postId), postEntity.getMembers().getId());
     }
 
     public Page<Comment> getComments(Long postId, Pageable pageable) {
@@ -96,7 +103,7 @@ public class PostService {
     }
 
     @Transactional
-    public void like(Long postId, String MemberId) {
+    public void postlike(Long postId, String MemberId) {
         PostEntity postEntity = postRepository.findById(postId).orElseThrow(() -> new ProchatException(ErrorCode.POST_NOT_FOUND, String.format("postId is %d", postId)));
         MemberEntity memberEntity = memberRepository.findByMemberId(MemberId)
                 .orElseThrow(() -> new ProchatException(ErrorCode.USER_NOT_FOUND, String.format("userName is %s", MemberId)));
@@ -106,7 +113,21 @@ public class PostService {
         });
 
         likeRepository.save(LikeEntity.of(postEntity, memberEntity));
+        alarmService.send(AlarmType.NEW_LIKE_ON_POST, new AlarmArgs(memberEntity.getId(), postId), postEntity.getMembers().getId());
 
+    }
+    @Transactional
+    public void commentlike(Long commentId, String MemberId) {
+        CommentEntity commentEntity = commentRepository.findById(commentId).orElseThrow(() -> new ProchatException(ErrorCode.POST_NOT_FOUND, String.format("postId is %d", postId)));
+        MemberEntity memberEntity = memberRepository.findByMemberId(MemberId)
+                .orElseThrow(() -> new ProchatException(ErrorCode.USER_NOT_FOUND, String.format("userName is %s", MemberId)));
+
+        likeRepository.findByMemberAndPost(memberEntity, commentEntity).ifPresent(it -> {
+            throw new ProchatException(ErrorCode.ALREADY_LIKED_POST, String.format("userName %s already like the post %s", MemberId, commentId));
+        });
+
+        likeRepository.save(LikeEntity.of(postEntity, memberEntity));
+        alarmService.send(AlarmType.NEW_LIKE_ON_POST, new AlarmArgs(memberEntity.getId(), postId), postEntity.getMembers().getId());
 
     }
 

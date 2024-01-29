@@ -20,6 +20,7 @@ jwt:
   secret-key: secret-key-20dhdfhkksnmcjhs-sdfjklsjlkcvhlksjdflksjnc
   token.expired-time-ms: 2592000000
 
+
 spring:
   config:
     activate:
@@ -55,6 +56,9 @@ spring:
         smtp.auth: true
         smtp.timeout: 50000 # SMTP 서버에 연결을 시도하고 응답을 기다리는 최대 시간이 50,000ms
         smtp.starttls.enable: true
+
+
+
 
 
 

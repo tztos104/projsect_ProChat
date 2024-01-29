@@ -23,9 +23,7 @@ public class PostEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String title;
-
     private String content;
 
     @ManyToOne
@@ -40,11 +38,9 @@ public class PostEntity {
     @JoinColumn(name = "post_id")
     private List<LikeEntity> likes;
 
-
     private Timestamp regDate;
     private Timestamp updateDate;
     private Timestamp removeDate;
-
 
 
     @PrePersist
