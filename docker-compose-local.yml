@@ -1,4 +1,4 @@
-version: "3.9"
+version: "3.8"
 services:
   project_prochat-redis:
     container_name: project_prochat-redis
@@ -8,18 +8,20 @@ services:
     image: tztos104/prochat-redis
     ports:
       - "6379:6379"
+
   project_prochat-database:
     container_name: project_prochat-database
     build:
       dockerfile: Dockerfile
       context: ./database
     image: tztos104/project_prochat-database
+
     ports:
       - "3306:3306"
     environment:
-      - MYSQL_DATABASE=project_prochat
-      - MYSQL_ROOT_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
-
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_DATABASE: project_prochat
 
     volumes:
-      - ./datab ase/config:/etc/mysql/conf.d
+      - ./database/config:/etc/mysql/conf.d
+      - ./database/config:/docker-entrypoint-initdb.d

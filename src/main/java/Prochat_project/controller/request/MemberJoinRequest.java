@@ -9,6 +9,8 @@ public class MemberJoinRequest {
 
     private String memberId;
     private String memberPw;
+    private String memberEmail;
+
 
     public MemberJoinRequest() {
     }

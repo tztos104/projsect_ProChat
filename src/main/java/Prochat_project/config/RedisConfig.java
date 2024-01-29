@@ -1,0 +1,60 @@
+package Prochat_project.config;
+
+import Prochat_project.model.Members;
+import io.lettuce.core.RedisURI;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
+import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
+import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
+
+@Configuration
+@EnableRedisRepositories
+@RequiredArgsConstructor
+public class RedisConfig {
+
+    private final RedisProperties redisProperties;
+
+    @Value("${spring.data.redis.host}")
+    private String host;
+    @Value("${spring.data.redis.port}")
+    private int port;
+
+
+
+    @Bean
+    public LettuceConnectionFactory redisConnectionFactory() {
+        RedisStandaloneConfiguration redisConfig = new RedisStandaloneConfiguration(host, port);
+        LettuceConnectionFactory connectionFactory = new LettuceConnectionFactory(redisConfig);
+        connectionFactory.start();  // 시작
+        return connectionFactory;
+    }
+
+    @Bean
+    public StringRedisTemplate StringRedisTemplate() {
+        StringRedisTemplate stringRedisTemplate = new StringRedisTemplate();
+        stringRedisTemplate.setConnectionFactory(redisConnectionFactory());
+        return stringRedisTemplate;
+    }
+
+
+
+    @Bean
+    public RedisTemplate<String, Members> userRedisTemplate() {
+        RedisTemplate<String, Members> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setConnectionFactory(redisConnectionFactory());
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<Members>(Members.class));
+        return redisTemplate;
+    }
+
+
+}

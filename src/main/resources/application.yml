@@ -16,41 +16,47 @@ spring:
       on-profile: common
 
 ---
+jwt:
+  secret-key: secret-key-20dhdfhkksnmcjhs-sdfjklsjlkcvhlksjdflksjnc
+  token.expired-time-ms: 2592000000
+
 spring:
   config:
     activate:
       on-profile: local
   datasource:
+
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/project_prochat
-    username: ${SPRING_DATASOURCE_USERNAME}
-    password: ${SPRING_DATASOURCE_PASSWORD}
+
+    username: root
+    password: 1234
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     show-sql: true
   data:
     redis:
       host: localhost
       port: 6379
 
+
+
   # ?????
   mail:
     host: smtp.gmail.com
     port: 587
-    username: ggung0929mailing
-    password: odxxfbijynsjtjuz
+    username: tztos104@gmail.com
+    password: spukdtcxzfnvufrz
     properties:
       mail:
-        smtp:
-          starttls:
-            enable: true
-          auth: true
-          timeout: 5000
-jwt:
-  secret-key: secret-key-20dhdfhkksnmcjhs-sdfjklsjlkcvhlksjdflksjnc
-  token.expired-time-ms: 2592000000
+        debug: true
+        smtp.auth: true
+        smtp.timeout: 50000 # SMTP 서버에 연결을 시도하고 응답을 기다리는 최대 시간이 50,000ms
+        smtp.starttls.enable: true
+
+
 
 
 ---

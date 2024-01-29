@@ -6,7 +6,7 @@ public class MemberEntityFixture {
 
     public static MemberEntity get(String memberId, String memberPw){
        MemberEntity result = new MemberEntity();
-       result.setId(1);
+       result.setId(1L);
        result.setMemberId(memberId);
        result.setMemberPw(memberPw);
        return result;

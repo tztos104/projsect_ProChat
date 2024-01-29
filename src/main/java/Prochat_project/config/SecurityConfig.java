@@ -1,39 +1,68 @@
 package Prochat_project.config;
 
+import Prochat_project.config.filter.JwtTokenFilter;
+import Prochat_project.exception.CustomAuthenticationEntryPoint;
+import Prochat_project.service.MemberService;
 import jakarta.servlet.DispatcherType;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
 
-    @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+    private final MemberService memberService;
+    @Value("${jwt.secret-key}")
+    private  String key;
+    private final RedisTemplate<String, String> redisTemplate;
+
+
 
     @Bean
     public SecurityFilterChain applicationSecurity(HttpSecurity http) throws Exception {
-        http
-                .cors(AbstractHttpConfigurer::disable)
+        http    .cors(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
-                .securityMatcher("/**") // map current config to given resource path
-                .sessionManagement(sessionManagementConfigurer
-                        -> sessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .formLogin(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(registry -> registry // 요청에 대한 권한 설정 메서드
-                        .requestMatchers("/**").permitAll() // / 경로 요청에 대한 권한을 설정. permitAll() 모든 사용자, 인증되지않은 사용자에게 허용
-                        .anyRequest().authenticated() // 다른 나머지 모든 요청에 대한 권한 설정, authenticated()는 인증된 사용자에게만 허용, 로그인해야만 접근 가능
-                );
+                .sessionManagement(sessionManagementConfigurer
+                        -> sessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
+
+        http.authorizeHttpRequests((authorizeHttpRequests) ->
+                authorizeHttpRequests
+                        .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+                        .requestMatchers("/api/v1/member/join").permitAll()
+                        .requestMatchers("/api/v1/member/login").permitAll()
+                        .requestMatchers("/api/v1/mails/mail_send").permitAll()
+                        .requestMatchers("/api/v1/mails/verify").permitAll()
+                        .requestMatchers("/api/v1/member/logout").hasRole("Member")
+                        .requestMatchers(HttpMethod.GET, "/api/v1/posts").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/api/v1/posts/{postId}").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/api/v1/posts/{postId}/comments").permitAll()
+                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+                        .anyRequest().authenticated()
+        );
+
+        http
+                .addFilterBefore(new JwtTokenFilter(key, memberService), UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling(exceptionHandling ->
+                        exceptionHandling.authenticationEntryPoint(new CustomAuthenticationEntryPoint()));
+
+
 
         return http.build();
     }
