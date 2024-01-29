@@ -6,3 +6,6 @@ $ docker ps -a
 $ docker exec -it [컨테이너 이름 또는 id] /bin/bash // 컨테이너를 sh, bash 등의 터미널 환경으로 접근
 $ docker stop [컨테이너 이름 또는 id]
 $ docker inspect [컨테이너 이름 또는 id]
+
+도커 컴포즈 실행
+docker-compose -f docker-compose-local.yml up -d
