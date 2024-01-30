@@ -53,9 +53,15 @@ public class LikeEntity {
         this.updateDate = Timestamp.from(Instant.now());
     }
 
-    public static LikeEntity of(PostEntity post, MemberEntity member) {
+    public static LikeEntity ofPost(PostEntity post, MemberEntity member) {
         LikeEntity entity = new LikeEntity();
         entity.setPost(post);
+        entity.setMember(member);
+        return entity;
+    }
+    public static LikeEntity ofComment(CommentEntity comment, MemberEntity member) {
+        LikeEntity entity = new LikeEntity();
+        entity.setComment(comment);;
         entity.setMember(member);
         return entity;
     }

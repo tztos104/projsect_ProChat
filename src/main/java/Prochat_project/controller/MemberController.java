@@ -1,10 +1,7 @@
 package Prochat_project.controller;
 
 
-import Prochat_project.controller.request.MemberJoinRequest;
-import Prochat_project.controller.request.MemberLoginRequest;
-import Prochat_project.controller.request.MemberProfileRequest;
-import Prochat_project.controller.request.PasswordRequest;
+import Prochat_project.controller.request.*;
 import Prochat_project.controller.response.*;
 import Prochat_project.model.Follow;
 import Prochat_project.model.Members;
@@ -14,6 +11,7 @@ import Prochat_project.service.AlarmService;
 import Prochat_project.service.FollowService;
 import Prochat_project.service.MemberService;
 import Prochat_project.util.ClassUtils;
+import Prochat_project.util.JwtTokenUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -35,6 +33,7 @@ public class MemberController {
     private final FollowService followService;
     private final AlarmService alarmService;
 
+
     @PostMapping("/join")
     public Response<MemberJoinResponse> join(@RequestBody MemberJoinRequest request) {
         return Response.success(MemberJoinResponse.fromMember(
@@ -51,14 +50,21 @@ public class MemberController {
     }
 
     @PostMapping("/logout")
-    public Response<MemberLoginResponse> logout(Authentication authentication) {
+    public Response<MemberLoginResponse> logout(@RequestBody MemberLogoutRequest request,Authentication authentication) {
+        Members members = ClassUtils.getSafeCastInstance(authentication.getPrincipal(), Members.class);
 
+        memberService.logout(request.getToken(), members.getMemberId());
 
-
-        return Response.success(new MemberLoginResponse(token));
-
+        return Response.success(new MemberLoginResponse(request.getToken()));
     }
+    @PostMapping("/logout/all")
+    public Response<MemberLoginResponse> logoutAll(@RequestBody MemberLogoutRequest request,Authentication authentication) {
+        Members members = ClassUtils.getSafeCastInstance(authentication.getPrincipal(), Members.class);
 
+        memberService.logout(request.getToken(), members.getMemberId());
+
+        return Response.success(new MemberLoginResponse(request.getToken()));
+    }
 
     @PutMapping("/profile_update")
     public Response<MemberProfileResponse> updateProfile(@RequestBody MemberProfileRequest request, Authentication authentication) {
@@ -79,6 +85,7 @@ public class MemberController {
         Members members = ClassUtils.getSafeCastInstance(authentication.getPrincipal(), Members.class);
 
         memberService.updatePassword(members.getMemberId(), request.getMemberPw(), request.getNewPassword());
+        memberService.logout(request.getToken(), members.getMemberId());
         return Response.success();
     }
 

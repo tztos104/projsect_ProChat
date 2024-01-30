@@ -66,7 +66,13 @@ public class PostController {
 
     @PostMapping("/{postId}/likes")
     public Response<Void> like(@PathVariable(name = "postId") Long postId, Authentication authentication) {
-        postService.postlike(postId, authentication.getName());
+        postService.postLike(postId, authentication.getName());
+        return Response.success();
+    }
+
+    @PostMapping("/comments/likes")
+    public Response<Void> commentLike(@RequestParam(name = "commentId") Long commentId,Authentication authentication) {
+        postService.commentLike(commentId, authentication.getName());
         return Response.success();
     }
 

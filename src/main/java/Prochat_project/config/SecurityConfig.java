@@ -1,7 +1,10 @@
 package Prochat_project.config;
 
 import Prochat_project.config.filter.JwtTokenFilter;
+import Prochat_project.config.filter.RedisLogoutFilter;
 import Prochat_project.exception.CustomAuthenticationEntryPoint;
+import Prochat_project.model.Members;
+import Prochat_project.repository.CacheRepository;
 import Prochat_project.service.MemberService;
 import jakarta.servlet.DispatcherType;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +32,8 @@ public class SecurityConfig {
     private final MemberService memberService;
     @Value("${jwt.secret-key}")
     private  String key;
+    private CacheRepository cacheRepository;
+
 
 
 
@@ -49,7 +54,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/member/login").permitAll()
                         .requestMatchers("/api/v1/mails/mail_send").permitAll()
                         .requestMatchers("/api/v1/mails/verify").permitAll()
-                        .requestMatchers("/api/v1/member/logout").hasRole("Member")
+                        .requestMatchers("/api/v1/member/logout").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/posts").permitAll()
                         .requestMatchers(HttpMethod.GET,"/api/v1/posts/{postId}").permitAll()
                         .requestMatchers(HttpMethod.GET,"/api/v1/posts/{postId}/comments").permitAll()
@@ -58,7 +63,8 @@ public class SecurityConfig {
         );
 
         http
-                .addFilterBefore(new JwtTokenFilter(key, memberService), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtTokenFilter(key, memberService,cacheRepository), UsernamePasswordAuthenticationFilter.class)
+
                 .exceptionHandling(exceptionHandling ->
                         exceptionHandling.authenticationEntryPoint(new CustomAuthenticationEntryPoint()));
 

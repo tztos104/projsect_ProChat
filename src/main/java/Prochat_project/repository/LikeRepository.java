@@ -1,5 +1,6 @@
 package Prochat_project.repository;
 
+import Prochat_project.model.entity.CommentEntity;
 import Prochat_project.model.entity.LikeEntity;
 import Prochat_project.model.entity.MemberEntity;
 import Prochat_project.model.entity.PostEntity;
@@ -16,6 +17,7 @@ import java.util.Optional;
 @Repository
 public interface LikeRepository extends JpaRepository<LikeEntity,Long> {
     Optional<LikeEntity> findByMemberAndPost(MemberEntity member, PostEntity post);
+    Optional<LikeEntity> findByMemberAndComment(MemberEntity member, CommentEntity comment);
 
 
     @Query(value = "SELECT COUNT(*) from LikeEntity entity WHERE entity.post = :post")

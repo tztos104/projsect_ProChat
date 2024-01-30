@@ -31,7 +31,7 @@ public class PostEntity {
     private MemberEntity members;
 
     @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "post_id")
+    @JoinColumn(name = "comment_id")
     private List<CommentEntity> comments;
 
     @OneToMany(fetch = FetchType.LAZY)

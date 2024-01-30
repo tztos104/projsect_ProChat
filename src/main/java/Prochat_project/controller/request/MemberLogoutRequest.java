@@ -5,12 +5,10 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class PasswordRequest {
-
-    private String memberPw;
-    private String newPassword;
+public class MemberLogoutRequest {
+    private String memberId;
     private String token;
 
-    public PasswordRequest() {
+    public MemberLogoutRequest() {
     }
 }

@@ -14,6 +14,7 @@ public enum ErrorCode {
     INVALID_PASSWORD(HttpStatus.UNAUTHORIZED, "패스워드가 틀립니다."),
     DUPLICATED_MEMBER_ID(HttpStatus.CONFLICT, "이미 있는 아이디입니다."), //맴버아이뒤 틀림
     ALREADY_LIKED_POST(HttpStatus.CONFLICT, "user already like the post"),
+    ALREADY_LIKED_COMMENT(HttpStatus.CONFLICT, "user already like the comment"),
     INVALID_PERMISSION(HttpStatus.UNAUTHORIZED, "User has invalid permission"),
     DATABASE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Database error occurs"),
     NOTIFICATION_CONNECT_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Connect to notification occurs error"),

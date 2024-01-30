@@ -34,19 +34,21 @@ public class UserServiceTest {
     void 회원가입성공(){
         String memberId = "memberId";
         String memberPw = "memberPw";
+        String memberEmail = "memberEmail";
 
         when(memberRepository.findByMemberId(memberId)).thenReturn(Optional.empty());
         when(encoder.encode(memberPw)).thenReturn("encodedPw");
         when(memberRepository.save(any())).thenReturn(MemberEntityFixture.get(memberId, memberPw));
 
 
-        Assertions.assertDoesNotThrow(()->memberService.join(memberId,memberPw));
+        Assertions.assertDoesNotThrow(()->memberService.join(memberId,memberPw,memberEmail));
     }
 
     @Test
     void 회원가입시_아이디중복(){
         String memberId = "memberId";
         String memberPw = "memberPw";
+        String memberEmail = "memberEmail";
         MemberEntity fixture = MemberEntityFixture.get(memberId, memberPw);
 
         when(memberRepository.findByMemberId(memberId)).thenReturn(Optional.of(fixture));
@@ -54,7 +56,7 @@ public class UserServiceTest {
         when(memberRepository.save(any())).thenReturn(Optional.of(fixture));
 
 
-        ProchatException e = Assertions.assertThrows(ProchatException.class, () -> memberService.join(memberId, memberPw));
+        ProchatException e = Assertions.assertThrows(ProchatException.class, () -> memberService.join(memberId, memberPw,memberEmail));
         Assertions.assertEquals(ErrorCode.DUPLICATED_MEMBER_ID,e.getErrorCode());
     }
 
@@ -75,11 +77,11 @@ public class UserServiceTest {
 
     @Test
     void 로그인시_실패_유저가없는경우(){
-        String memberId = "memberId";
+        String memberId = "memberId1";
         String memberPw = "memberPw";
-
+        MemberEntity fixture = MemberEntityFixture.get(memberId, memberPw);
         when(memberRepository.findByMemberId(memberId)).thenReturn(Optional.empty());
-
+        when(encoder.matches(memberPw,fixture.getMemberPw())).thenReturn(true);
 
 
         ProchatException e =  Assertions.assertThrows(ProchatException.class,()->memberService.login(memberId,memberPw));

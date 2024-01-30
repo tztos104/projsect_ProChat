@@ -14,6 +14,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
+import java.util.function.Function;
+
 @RequiredArgsConstructor
 @EnableWebSecurity
 @AllArgsConstructor
@@ -39,6 +41,7 @@ public class JwtTokenUtils  {
     public static String getMemberId(String token, String key) {
         return extractAllClaims(token, key).get("memberId", String.class);
     }
+
 
     private static Key getSigningKey(String secretKey) {
         byte[] keyBytes = secretKey.getBytes(StandardCharsets.UTF_8);

@@ -9,6 +9,7 @@ import org.hibernate.annotations.Where;
 
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.List;
 
 
 @Setter
@@ -33,6 +34,10 @@ public class CommentEntity {
     @ManyToOne
     @JoinColumn(name = "post_id")
     private PostEntity post;
+
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "comment_id")
+    private List<LikeEntity> likes;
 
     @Column(name = "reg_date")
     private Timestamp regDate;

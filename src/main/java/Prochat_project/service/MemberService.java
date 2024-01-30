@@ -22,7 +22,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
@@ -41,9 +43,6 @@ public class MemberService {
     @Value("${jwt.token.expired-time-ms}")
     private Long expiredTimeMs;
 
-    private static final String BLACKLIST_KEY_PREFIX = "jwt:blacklist:";
-
-
 
     public Members loadUserByUserName(String memberId) throws UsernameNotFoundException {
         return redisRepository.getUser(memberId).orElseGet(
@@ -59,11 +58,20 @@ public class MemberService {
         if (!encoder.matches(memberPw, savedUser.getPassword())) {
             throw new ProchatException(ErrorCode.INVALID_PASSWORD);
         }
+        String token = JwtTokenUtils.generateAccessToken(memberId, secretKey, expiredTimeMs);
 
-
-        return  JwtTokenUtils.generateAccessToken(memberId, secretKey, expiredTimeMs);
+        return  token;
     }
+    //로그아웃 로직
+    @Transactional
+    public void logout(String token, String memberId){
+        Members savedUser = loadUserByUserName(memberId);
+        if (redisRepository.isBlackListUserOne(token, memberId)) {
 
+            throw new RuntimeException("Logout denied for blacklisted user");
+        }
+        redisRepository.setBlackListUser(token,savedUser);
+    }
 
     //회원가입 로직
     @Transactional
@@ -78,12 +86,6 @@ public class MemberService {
     }
 
 
-    public void logout() {
-        Members member = (Members) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (redisTemplate.opsForValue().get("JWT_TOKEN:" + member.getMemberId()) != null) {
-            redisTemplate.delete("JWT_TOKEN:" + member.getMemberId()); //Token 삭제
-        }
-    }
 
     //프로필 업데이트
     @Transactional
@@ -112,6 +114,7 @@ public class MemberService {
 
         // 현재 비밀번호 확인
         if (!encoder.matches(memberPw, member.getMemberPw())) {
+            System.out.println(memberPw+":"+member.getMemberPw());
             throw new ProchatException(ErrorCode.INVALID_PASSWORD, "현재 비밀번호가 일치하지 않습니다");
         }
         // 새로운 비밀번호로 업데이트

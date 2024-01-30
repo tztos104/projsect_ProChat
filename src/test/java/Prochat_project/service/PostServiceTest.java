@@ -100,7 +100,7 @@ public class PostServiceTest {
         when(postRepository.findById(fixture.getPostId())).thenReturn(Optional.of(mock(PostEntity.class)));
         when(memberRepository.findByMemberId(fixture.getUserName())).thenReturn(Optional.empty());
         ProchatException exception = Assertions.assertThrows(ProchatException.class, () ->
-                postService.modify(fixture.getUserId(), fixture.getPostId(), fixture.getTitle(), fixture.getContent()));
+                postService.modify(null, fixture.getPostId(), fixture.getTitle(), fixture.getContent()));
         Assertions.assertEquals(ErrorCode.USER_NOT_FOUND, exception.getErrorCode());
     }
 

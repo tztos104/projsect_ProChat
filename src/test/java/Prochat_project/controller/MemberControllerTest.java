@@ -37,13 +37,14 @@ public class MemberControllerTest {
     public void 회원가입() throws Exception {
         String memberId = "memberId";
         String memberPw = "memberPw";
+        String memberEmail = "memberEmail";
 
         //TODO
-        when(memberService.join(memberId,memberPw)).thenReturn(mock(Members.class));
+        when(memberService.join(memberId,memberPw, memberEmail)).thenReturn(mock(Members.class));
 
         mockMvc.perform(post("/api/v1/member/join")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsBytes(new MemberJoinRequest(memberId, memberPw)))
+                .content(objectMapper.writeValueAsBytes(new MemberJoinRequest(memberId, memberPw,memberEmail)))
         ).andDo(print())
                 .andExpect(status().isOk());
 
@@ -52,13 +53,13 @@ public class MemberControllerTest {
     public void 회원가입시_중복회원가입시_에러반환() throws Exception {
         String memberId = "memberId";
         String memberPw = "memberPw";
+        String memberEmail = "memberEmail";
 
-
-        when(memberService.join(memberId,memberPw)).thenThrow(new ProchatException(ErrorCode.DUPLICATED_MEMBER_ID, String.format("%s 는 이미 있는 아이디입니다",memberId)));
+        when(memberService.join(memberId,memberPw,memberEmail)).thenThrow(new ProchatException(ErrorCode.DUPLICATED_MEMBER_ID, String.format("%s 는 이미 있는 아이디입니다",memberId)));
 
         mockMvc.perform(post("/api/v1/member/join")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsBytes(new MemberJoinRequest(memberId, memberPw)))
+                        .content(objectMapper.writeValueAsBytes(new MemberJoinRequest(memberId, memberPw,memberEmail)))
                 ).andDo(print())
                 .andExpect(status().isConflict());
     }

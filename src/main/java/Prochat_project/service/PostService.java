@@ -5,8 +5,6 @@ import Prochat_project.exception.ProchatException;
 import Prochat_project.model.Comment;
 import Prochat_project.model.Post;
 import Prochat_project.model.alarm.AlarmArgs;
-import Prochat_project.model.alarm.AlarmEvent;
-import Prochat_project.model.alarm.AlarmProducer;
 import Prochat_project.model.alarm.AlarmType;
 import Prochat_project.model.entity.CommentEntity;
 import Prochat_project.model.entity.LikeEntity;
@@ -94,7 +92,8 @@ public class PostService {
                 .orElseThrow(() -> new ProchatException(ErrorCode.USER_NOT_FOUND, String.format("userName is %s", memberId)));
 
         commentRepository.save(CommentEntity.of(comment, postEntity, memberEntity));
-        alarmService.send(AlarmType.NEW_COMMENT_ON_POST, new AlarmArgs(memberEntity.getId(), postId), postEntity.getMembers().getId());
+        String content = String.format("%s 님이 포스트에 댓글을 달았습니다.",memberEntity.getMemberId());
+        alarmService.send(AlarmType.NEW_COMMENT_ON_POST, new AlarmArgs(memberEntity.getMemberId(), postId), postEntity.getMembers().getId(),comment);
     }
 
     public Page<Comment> getComments(Long postId, Pageable pageable) {
@@ -103,7 +102,7 @@ public class PostService {
     }
 
     @Transactional
-    public void postlike(Long postId, String MemberId) {
+    public void postLike(Long postId, String MemberId) {
         PostEntity postEntity = postRepository.findById(postId).orElseThrow(() -> new ProchatException(ErrorCode.POST_NOT_FOUND, String.format("postId is %d", postId)));
         MemberEntity memberEntity = memberRepository.findByMemberId(MemberId)
                 .orElseThrow(() -> new ProchatException(ErrorCode.USER_NOT_FOUND, String.format("userName is %s", MemberId)));
@@ -112,22 +111,24 @@ public class PostService {
             throw new ProchatException(ErrorCode.ALREADY_LIKED_POST, String.format("userName %s already like the post %s", MemberId, postId));
         });
 
-        likeRepository.save(LikeEntity.of(postEntity, memberEntity));
-        alarmService.send(AlarmType.NEW_LIKE_ON_POST, new AlarmArgs(memberEntity.getId(), postId), postEntity.getMembers().getId());
+        likeRepository.save(LikeEntity.ofPost(postEntity, memberEntity));
+        String content = String.format("%s 님이 포스트에 좋아요를 눌렀습니다.",memberEntity.getMemberId());
+        alarmService.send(AlarmType.NEW_LIKE_ON_POST, new AlarmArgs(memberEntity.getMemberId(), postId), postEntity.getMembers().getId(),content);
 
     }
     @Transactional
-    public void commentlike(Long commentId, String MemberId) {
-        CommentEntity commentEntity = commentRepository.findById(commentId).orElseThrow(() -> new ProchatException(ErrorCode.POST_NOT_FOUND, String.format("postId is %d", postId)));
+    public void commentLike(Long commentId, String MemberId) {
+        CommentEntity commentEntity = commentRepository.findById(commentId).orElseThrow(() -> new ProchatException(ErrorCode.POST_NOT_FOUND, String.format("postId is %d", commentId)));
         MemberEntity memberEntity = memberRepository.findByMemberId(MemberId)
                 .orElseThrow(() -> new ProchatException(ErrorCode.USER_NOT_FOUND, String.format("userName is %s", MemberId)));
 
-        likeRepository.findByMemberAndPost(memberEntity, commentEntity).ifPresent(it -> {
-            throw new ProchatException(ErrorCode.ALREADY_LIKED_POST, String.format("userName %s already like the post %s", MemberId, commentId));
+        likeRepository.findByMemberAndComment(memberEntity, commentEntity).ifPresent(it -> {
+            throw new ProchatException(ErrorCode.ALREADY_LIKED_COMMENT, String.format("userName %s already like the post %s", MemberId, commentId));
         });
 
-        likeRepository.save(LikeEntity.of(postEntity, memberEntity));
-        alarmService.send(AlarmType.NEW_LIKE_ON_POST, new AlarmArgs(memberEntity.getId(), postId), postEntity.getMembers().getId());
+        likeRepository.save(LikeEntity.ofComment(commentEntity, memberEntity));
+        String content = String.format("%s 님이 댓글에 좋아요를 눌렀습니다.",memberEntity.getMemberId());
+        alarmService.send(AlarmType.NEW_LIKE_ON_COMMENT, new AlarmArgs(memberEntity.getMemberId(), commentId), commentEntity.getMember().getId(),content);
 
     }
 

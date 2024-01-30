@@ -10,6 +10,7 @@ import org.hibernate.proxy.HibernateProxy;
 
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.List;
 import java.util.Objects;
 
 @Getter
@@ -27,14 +28,15 @@ public class MemberEntity {
     private String memberId;
     private String memberPw;
     private String memberEmail;
-
     private String memberName;
     private String memberPhone;
     private String memberAddress;
     private String memberAddressDetail;
     private String memberProfile;
     private String memberImage;
-
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "members_id")
+    private List<PostEntity> posts;
 
     private Timestamp regDate;
     private Timestamp updateDate;
