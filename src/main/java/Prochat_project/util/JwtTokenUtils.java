@@ -1,7 +1,6 @@
 package Prochat_project.util;
 
 
-import Prochat_project.service.MemberService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -14,7 +13,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
-import java.util.function.Function;
 
 @RequiredArgsConstructor
 @EnableWebSecurity

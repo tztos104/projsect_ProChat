@@ -1,8 +1,8 @@
 package Prochat_project.config.filter;
 
-import Prochat_project.model.Members;
+import Prochat_project.member.Members;
 import Prochat_project.repository.CacheRepository;
-import Prochat_project.service.MemberService;
+import Prochat_project.member.MemberService;
 import Prochat_project.util.JwtTokenUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

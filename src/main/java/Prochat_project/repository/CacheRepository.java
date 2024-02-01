@@ -1,13 +1,12 @@
 package Prochat_project.repository;
 
-import Prochat_project.model.Members;
+import Prochat_project.member.Members;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
 import java.time.Duration;
-import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j

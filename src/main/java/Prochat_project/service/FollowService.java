@@ -5,9 +5,9 @@ import Prochat_project.exception.ProchatException;
 import Prochat_project.model.alarm.AlarmArgs;
 import Prochat_project.model.alarm.AlarmType;
 import Prochat_project.model.entity.FollowEntity;
-import Prochat_project.model.entity.MemberEntity;
+import Prochat_project.member.MemberEntity;
 import Prochat_project.repository.FollowRepository;
-import Prochat_project.repository.MemberRepository;
+import Prochat_project.member.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

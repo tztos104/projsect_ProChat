@@ -2,8 +2,8 @@ package Prochat_project.repository;
 
 import Prochat_project.model.entity.CommentEntity;
 import Prochat_project.model.entity.LikeEntity;
-import Prochat_project.model.entity.MemberEntity;
-import Prochat_project.model.entity.PostEntity;
+import Prochat_project.member.MemberEntity;
+import Prochat_project.post.PostEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

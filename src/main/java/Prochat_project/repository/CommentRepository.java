@@ -1,7 +1,7 @@
 package Prochat_project.repository;
 
 import Prochat_project.model.entity.CommentEntity;
-import Prochat_project.model.entity.PostEntity;
+import Prochat_project.post.PostEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

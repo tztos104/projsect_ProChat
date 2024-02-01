@@ -1,6 +1,6 @@
 package Prochat_project.config.filter;
 
-import Prochat_project.model.Members;
+import Prochat_project.member.Members;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

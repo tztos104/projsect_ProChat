@@ -1,5 +1,6 @@
 package Prochat_project.model.entity;
 
+import Prochat_project.member.MemberEntity;
 import Prochat_project.model.alarm.AlarmArgs;
 import Prochat_project.model.alarm.AlarmType;
 import jakarta.persistence.*;

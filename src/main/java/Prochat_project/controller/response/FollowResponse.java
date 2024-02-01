@@ -1,7 +1,7 @@
 package Prochat_project.controller.response;
 
 import Prochat_project.model.Follow;
-import Prochat_project.model.Members;
+import Prochat_project.member.Members;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

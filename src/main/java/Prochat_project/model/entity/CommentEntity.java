@@ -1,5 +1,7 @@
 package Prochat_project.model.entity;
 
+import Prochat_project.member.MemberEntity;
+import Prochat_project.post.PostEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

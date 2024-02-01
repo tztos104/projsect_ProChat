@@ -1,7 +1,7 @@
 package Prochat_project.controller;
 
-import Prochat_project.controller.request.EmailCertRequest;
-import Prochat_project.controller.response.EmailCertResponse;
+import Prochat_project.member.request.EmailCertRequest;
+import Prochat_project.member.response.EmailCertResponse;
 import Prochat_project.controller.response.Response;
 import Prochat_project.service.MailSendService;
 import jakarta.mail.MessagingException;

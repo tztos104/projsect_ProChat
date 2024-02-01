@@ -1,7 +1,7 @@
 package Prochat_project.repository;
 
 import Prochat_project.model.entity.FollowEntity;
-import Prochat_project.model.entity.MemberEntity;
+import Prochat_project.member.MemberEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

@@ -1,7 +1,7 @@
 package Prochat_project.service;
 
 import Prochat_project.config.EncoderConfig;
-import Prochat_project.controller.response.EmailCertResponse;
+import Prochat_project.member.response.EmailCertResponse;
 import Prochat_project.exception.ErrorCode;
 import Prochat_project.exception.ProchatException;
 import Prochat_project.model.CertificationNumber;

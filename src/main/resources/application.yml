@@ -26,7 +26,6 @@ spring:
     activate:
       on-profile: local
   datasource:
-
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/project_prochat
 
@@ -35,6 +34,7 @@ spring:
 
   jpa:
     hibernate:
+
       ddl-auto: update
     show-sql: true
   data:
